@@ -90,6 +90,10 @@ func formatFlag(haveShort bool, flag *FlagModel) string {
 	if v, ok := flag.Value.(repeatableFlag); ok && v.IsCumulative() {
 		flagString += " ..."
 	}
+	if v, ok := flag.Value.(enumFlag); ok {
+		flagString += fmt.Sprintf(" [%s]", strings.Join(v.Options(), ", "))
+	}
+
 	return flagString
 }
 

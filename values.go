@@ -46,6 +46,12 @@ type boolFlag interface {
 	IsBoolFlag() bool
 }
 
+// Optional interface to indicate enum flags that have options
+type enumFlag interface {
+	Value
+	Options() []string
+}
+
 // Optional interface for arguments that cumulatively consume all remaining
 // input.
 type remainderArg interface {
@@ -367,6 +373,10 @@ func (e *enumValue) Get() interface{} {
 	return (string)(*e.value)
 }
 
+func (e *enumValue) Options() []string {
+	return e.options
+}
+
 // -- []string Enum Value
 type enumsValue struct {
 	value   *[]string
@@ -400,6 +410,10 @@ func (s *enumsValue) String() string {
 
 func (s *enumsValue) IsCumulative() bool {
 	return true
+}
+
+func (e *enumsValue) Options() []string {
+	return e.options
 }
 
 // -- units.Base2Bytes Value

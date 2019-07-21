@@ -91,3 +91,29 @@ func TestCmdClause_HelpLong(t *testing.T) {
 	usage := buf.String()
 	assert.Equal(t, "long help text", usage)
 }
+
+func TestEnumValue(t *testing.T) {
+	templates := []struct{ name, template string }{
+		{"default", DefaultUsageTemplate},
+		// {"Compact", CompactUsageTemplate},
+		// {"Long", LongHelpTemplate},
+		// {"Man", ManPageTemplate},
+	}
+
+	var buf bytes.Buffer
+
+	a := New("test", "Test").Writer(&buf).Terminate(nil)
+	c := a.Command("enum", "enum command")
+	c.Flag("e", "enum flag").EnumVar(nil, "a", "b", "c")
+
+	for _, tp := range templates {
+		buf.Reset()
+		a.UsageTemplate(tp.template)
+		a.Parse([]string{"enum", "--help"})
+		// a.Parse([]string{"--help"})
+		usage := buf.String()
+		t.Logf("Usage for %s is:\n%s\n", tp.name, usage)
+
+		assert.Contains(t, usage, "[a, b, c]")
+	}
+}
